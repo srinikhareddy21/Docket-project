@@ -1,0 +1,56 @@
+/*
+ * DOCKET design tokens — restrained indigo / teal / violet palette on a light surface.
+ * Colors are space-separated RGB triplets so Tailwind opacity modifiers work (e.g. bg-primary/10).
+ */
+:root {
+  /* Surfaces — warm off-white, not pure gray */
+  --color-bg: 246 247 252;
+  --color-surface: 255 255 255;
+  --color-surface-muted: 238 240 248;
+  --color-border: 220 224 236;
+  --color-border-strong: 190 196 214;
+  --color-text: 24 28 42;
+  --color-text-muted: 84 90 112;
+  --color-text-subtle: 132 138 158;
+
+  /* Primary — muted indigo */
+  --color-primary: 79 70 180;
+  --color-primary-hover: 62 54 150;
+  --color-on-primary: 255 255 255;
+  --color-primary-soft: 232 230 250;
+  --color-focus: 99 102 241;
+
+  /* Semantic */
+  --color-success: 15 130 95;
+  --color-warning: 180 120 20;
+  --color-danger: 190 56 72;
+  --color-info: 45 120 180;
+
+  /* Status accents — readable on white badges */
+  --status-applied: 79 95 140;
+  --status-shortlisted: 45 120 180;
+  --status-assessment: 170 115 30;
+  --status-interview: 110 70 170;
+  --status-selected: 15 130 95;
+  --status-rejected: 190 56 72;
+  --status-withdrawn: 120 125 140;
+
+  /* Charts — coordinated soft palette */
+  --chart-1: 79 70 180;
+  --chart-2: 20 150 140;
+  --chart-3: 140 90 190;
+  --chart-4: 50 130 200;
+  --chart-5: 200 130 60;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius-card: 14px;
+  --radius-control: 9px;
+  --shadow-card: 0 1px 2px rgb(24 28 42 / 0.04), 0 4px 12px rgb(79 70 180 / 0.04);
+  --shadow-pop: 0 12px 32px rgb(24 28 42 / 0.12);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+}

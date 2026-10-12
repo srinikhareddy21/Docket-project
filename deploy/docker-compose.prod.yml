@@ -1,0 +1,63 @@
+# Production stack: Caddy (HTTPS, static site, /api proxy) -> Spring Boot -> MySQL.
+# Only Caddy publishes ports. MySQL and the backend are reachable only on the private network.
+#
+#   cp deploy/.env.production.example deploy/.env.production    # then fill in every value
+#   docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env.production up -d --build
+name: docket
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-docket}
+      MYSQL_USER: ${DB_USER:-docket}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deploy/.env.production}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in deploy/.env.production}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes: [docket-mysql:/var/lib/mysql]
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  backend:
+    build: ../backend
+    restart: unless-stopped
+    depends_on:
+      mysql: { condition: service_healthy }
+    env_file: .env.production
+    environment:
+      DB_HOST: mysql
+      SPRING_PROFILES_ACTIVE: prod
+    volumes: [docket-uploads:/data/uploads]
+    networks: [internal]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+    restart: unless-stopped
+    depends_on: [backend]
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in deploy/.env.production}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL in deploy/.env.production}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes: [caddy-data:/data, caddy-config:/config]
+    networks: [internal]
+
+networks:
+  internal:
+
+volumes:
+  docket-mysql:
+  docket-uploads:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,24 @@
+# Activated with SPRING_PROFILES_ACTIVE=prod (the Docker image sets it). Overrides application.yml for production.
+# The "prod" profile also switches on com.docket.ops.ProductionGuard, which refuses to start on unsafe settings.
+server:
+  forward-headers-strategy: native      # trust X-Forwarded-* from the reverse proxy (backend must NOT be reachable except through it)
+  shutdown: graceful
+  tomcat:
+    max-swallow-size: 2MB
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate                # never let Hibernate change a production schema; Flyway owns it
+logging:
+  level:
+    root: INFO
+    com.docket: INFO
+    org.hibernate.SQL: WARN             # SQL text can contain personal data; keep it out of logs
+    org.hibernate.orm.jdbc.bind: WARN   # bound parameter values likewise
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{40} - %msg%n"

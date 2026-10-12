@@ -1,0 +1,40 @@
+# One origin for the site and the API, so the HttpOnly + CSRF cookies are same-site.
+# DOMAIN and ACME_EMAIL come from the environment (deploy/.env.production).
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		# Scripts only from this origin. style-src allows inline styles because the UI library animates with them.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		-Server
+	}
+
+	# API: proxied to Spring Boot over the private Docker network. Never cache API responses.
+	handle /api/* {
+		reverse_proxy backend:8080 {
+			health_uri /api/health
+			health_interval 30s
+		}
+		header Cache-Control "no-store"
+	}
+
+	# Everything else: the React app, with client-side routing fallback.
+	handle {
+		root * /srv
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@html not path /assets/*
+		header @html Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}

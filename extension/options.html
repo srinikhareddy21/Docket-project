@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOCKET extension settings</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>body{width:auto;max-width:560px;margin:0 auto}</style>
+</head>
+<body>
+  <header><strong>DOCKET extension settings</strong></header>
+  <main>
+    <form id="form" novalidate>
+      <label for="base">DOCKET server address</label>
+      <input id="base" type="url" placeholder="https://your-docket-app.example" autocomplete="off" required>
+      <p class="small muted">
+        The public HTTPS address of your DOCKET site (same origin as the website). For local development only,
+        <code>http://localhost:8080</code> is allowed.
+      </p>
+      <label for="token">Extension token</label>
+      <input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="dkx_…" required>
+      <p class="small muted">
+        Create a token in DOCKET under <strong>Settings → Browser extension</strong>. Tokens are stored only
+        in this browser’s extension storage on this device. A token can add applications and check for duplicates;
+        it cannot read your other data.
+      </p>
+      <button type="submit" id="save">Save and test connection</button>
+    </form>
+    <p id="status" role="status" class="small"></p>
+  </main>
+  <script src="lib.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

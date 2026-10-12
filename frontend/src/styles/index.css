@@ -1,0 +1,37 @@
+@import './tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: var(--font-body); }
+  body { @apply bg-bg text-fg antialiased; }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.015em; }
+  :focus-visible { outline: 2px solid rgb(var(--color-focus)); outline-offset: 2px; }
+  ::selection { background: rgb(var(--color-primary) / 0.18); }
+}
+
+@layer components {
+  .card { @apply bg-surface border border-border rounded-card shadow-card; }
+  .label { @apply block text-sm font-medium text-fg mb-1.5; }
+  .field {
+    @apply w-full bg-surface border border-border-strong rounded-control px-3 py-2 text-sm text-fg
+           placeholder:text-fg-subtle transition-colors disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .field[aria-invalid='true'] { @apply border-danger; }
+  .skeleton { @apply rounded-control bg-surface-muted animate-pulse; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Inline status change: native select layered invisibly over the badge keeps it keyboard accessible. */
+td:has(> .sr-only-select) { position: relative; }
+.sr-only-select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+.sr-only-select:focus-visible { opacity: 1; background: rgb(var(--color-surface)); }

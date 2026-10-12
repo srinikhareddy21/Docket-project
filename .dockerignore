@@ -1,0 +1,22 @@
+# Dependencies and build output (rebuilt inside the image)
+**/node_modules
+**/dist
+**/target
+**/data
+**/.env
+**/.env.*
+!**/.env.example
+!deploy/.env.production.example
+
+# Not needed in the production image
+.git
+.github
+backups
+extension
+e2e
+scripts
+*.md
+!README.md
+*.log
+.idea
+.vscode

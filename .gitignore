@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+target/
+*.class
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+!**/.env.production.example
+.env.production
+
+# Local data and backups
+backups/
+data/
+backend/data/
+*.log
+*.pid
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Extension local deps (if installed for tests)
+extension/node_modules/
